@@ -30,7 +30,7 @@ export class Passwd {
         try {
             passwdFile = await this.readPasswdFile();
         } catch(err){
-            throw new Error(`Something went wrong reading the passwd file.`);
+            throw new Error(`Something went wrong reading the passwd file`);
         }
 
         let users : PasswdUser[] = [];
@@ -43,6 +43,9 @@ export class Passwd {
                 //Split the line by the delimitor
                 //Example line: root:x:0:0:root:/root:/bin/bash
                 let columns = line.split(Passwd.userColumnDelimiter);
+                
+                //If we don't have the right amount of columns, parsing did not go right!
+                if(columns.length != 7) throw new Error("There was an issue parsing the passwd file");
 
                 let user : PasswdUser = {
                     name: columns[0],
@@ -93,11 +96,11 @@ export class Passwd {
         Passwd.passwdFileLocation = pathToPasswd;
     }
 
-    public static getDelimiter() : string {
+    public static getColumnDelimiter() : string {
         return Passwd.userColumnDelimiter;
     }
 
-    public static setDelimiter(delimiter : string) : void {
+    public static setColumnDelimiter(delimiter : string) : void {
         Passwd.userColumnDelimiter = delimiter;
     }
 
