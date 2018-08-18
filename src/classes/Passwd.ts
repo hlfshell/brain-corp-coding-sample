@@ -15,7 +15,7 @@ export class Passwd {
     private static userColumnDelimiter : string = ":";
 
     private constructor(){
-        
+
     }
 
     public static getInstance() : Passwd {
@@ -23,33 +23,7 @@ export class Passwd {
         return this.instance;
     }
 
-    public static getPath() : string {
-        return Passwd.passwdFileLocation;
-    }
-
-    public static setPath(pathToPasswd : string) : void{
-        Passwd.passwdFileLocation = pathToPasswd;
-    }
-
-    public static getDelimiter() : string {
-        return Passwd.userColumnDelimiter;
-    }
-
-    public static setDelimiter(delimiter : string) : void {
-        Passwd.userColumnDelimiter = delimiter;
-    }
-
-    public static getLineDelimiter() : string {
-        return Passwd.userLineDelimiter;
-    }
-
-    public static setLineDelimiter(delimiter : string) : void {
-        Passwd.userLineDelimiter = delimiter;
-    }
-
-    private async readPasswdFile() : Promise<string> {
-        return (await getFile(Passwd.passwdFileLocation)).toString();
-    }
+    //======== Utility Functions ======== 
 
     public async getAllUsers() : Promise<PasswdUser[]> {
         let passwdFile;
@@ -58,19 +32,18 @@ export class Passwd {
         } catch(err){
             throw new Error(`Something went wrong reading the passwd file.`);
         }
-        console.log("passwd", passwdFile);
+
         let users : PasswdUser[] = [];
         try{
             let userLines = passwdFile.split(Passwd.userLineDelimiter);
             userLines.forEach((line : string)=>{
-                console.log("line", line);
                 //Protection in case of an empty line - ignore
                 if(!line || line == "") return;
 
                 //Split the line by the delimitor
                 //Example line: root:x:0:0:root:/root:/bin/bash
                 let columns = line.split(Passwd.userColumnDelimiter);
-                console.log("columns", columns);
+
                 let user : PasswdUser = {
                     name: columns[0],
                     uid: parseInt(columns[2]),
@@ -108,6 +81,36 @@ export class Passwd {
         });
 
         return filteredUsers;
+    }
+
+    //======== Getters and Setters ======== 
+
+    public static getPath() : string {
+        return Passwd.passwdFileLocation;
+    }
+
+    public static setPath(pathToPasswd : string) : void{
+        Passwd.passwdFileLocation = pathToPasswd;
+    }
+
+    public static getDelimiter() : string {
+        return Passwd.userColumnDelimiter;
+    }
+
+    public static setDelimiter(delimiter : string) : void {
+        Passwd.userColumnDelimiter = delimiter;
+    }
+
+    public static getLineDelimiter() : string {
+        return Passwd.userLineDelimiter;
+    }
+
+    public static setLineDelimiter(delimiter : string) : void {
+        Passwd.userLineDelimiter = delimiter;
+    }
+
+    private async readPasswdFile() : Promise<string> {
+        return (await getFile(Passwd.passwdFileLocation)).toString();
     }
 
 }
