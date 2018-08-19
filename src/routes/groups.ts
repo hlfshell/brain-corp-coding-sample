@@ -15,12 +15,12 @@ function handleErrors(err : Error, res : Response){
     }
 
     switch(err.message){
-        case "Something went wrong reading the passwd file": {
-            error.code = "PASSWD_FILE_LOCATION_ERROR";
+        case "Something went wrong reading the group file": {
+            error.code = "GROUP_FILE_LOCATION_ERROR";
             break;
         }
-        case "There was an issue parsing the passwd file": {
-            error.code = "PASSWD_PARSE_ERROR";
+        case "There was an issue parsing the group file": {
+            error.code = "GROUP_PARSE_ERROR";
             break;
         }
         default: {
@@ -35,7 +35,12 @@ function handleErrors(err : Error, res : Response){
 let GroupRoutes : Route = {
     
     getAllGroups: async function(req : Request, res : Response){
-
+        try {
+            let groups = await group.getAllGroups();
+            res.send(groups);
+        } catch(err){
+            handleErrors(err, res);
+        }
     },
 
     queryForGroups: async function(req : Request, res : Response){
