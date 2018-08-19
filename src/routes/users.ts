@@ -3,8 +3,10 @@ import { Request, Response } from "express";
 import { Route } from "../interfaces/Route";
 import { Passwd } from "../classes/Passwd";
 import ErrorResponse from "../interfaces/ErrorResponse";
+import { Group } from "../classes/Group";
 
 let passwd = Passwd.getInstance();
+let group = Group.getInstance();
 
 function handleErrors(err : Error, res : Response){
     let error : ErrorResponse = {
@@ -61,8 +63,18 @@ let UserRoutes : Route = {
         }
     },
 
-    getUsersGroups: function(req : Request, res : Response){
+    getUsersGroups: async function(req : Request, res : Response){
+        try {
+            let users = await passwd.getUsersByQuery({ uid: req.params.uid });
 
+            if(users.length <= 0) return res.status(404).end();
+            let user = users[0];
+            let groups = await group.getGroupsByQuery({ members: [user.name] })
+
+            res.send(groups);
+        } catch(err){
+            handleErrors(err, res);
+        }
     }
 
 };
