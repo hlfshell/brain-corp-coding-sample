@@ -2,6 +2,7 @@ import 'mocha';
 import { before, after } from 'mocha';
 import { expect } from 'chai';
 import GroupItem from '../interfaces/GroupItem';
+import { AsyncResource } from 'async_hooks';
 
 describe("Group - Instantiation", ()=>{
     
@@ -85,6 +86,14 @@ describe("Group - getAllGroups", ()=>{
         expect(Array.isArray(groups)).to.be.true;
     });
 
+    it("should return the correct number of groups", async ()=>{
+        Group.setPath("./src/tests/fake.group");
+        let groups = await group.getAllGroups();
+
+        expect(groups).to.be.ok;
+        expect(groups.length).to.be.equal(23);
+    });
+
     it("each object should return a username, uid, gid, comment, home directory, and shell", async ()=>{
         let groups = await group.getAllGroups();
 
@@ -103,6 +112,17 @@ describe("Group - getAllGroups", ()=>{
 
         expect(groupItem.members).to.not.be.null;
         expect(Array.isArray(groupItem.members)).to.be.true;
+    });
+
+    it("should return a group with information properly set", async ()=>{
+        Group.setPath("./src/tests/fake.group");
+        let groups = await group.getAllGroups();
+
+        let sambashare = groups[18];
+        expect(sambashare).to.be.ok;
+        expect(sambashare.name).to.be.equal("sambashare");
+        expect(sambashare.gid).to.be.equal(128);
+        expect(sambashare.members[0]).to.be.equal("keith");
     });
 
     it("should fail if the group file does not exist", async ()=>{
@@ -137,6 +157,80 @@ describe("Group - getAllGroups", ()=>{
         
         //We should never reach here due to the catch above
         expect.fail();
+    });
+
+    afterEach(()=>{
+        Group.setPath("/etc/group");
+        Group.setLineDelimiter("\n");
+        Group.setColumnDelimiter(":");
+    });
+
+});
+
+describe("Group - getGroupsByQuery", ()=>{
+    let Group = require('../classes/Group').Group;
+    let group = Group.getInstance();
+
+    it("should return an array with the correct members from the query", async ()=>{
+        Group.setPath("./src/tests/fake.group");
+        let queriedGroups = await group.getGroupsByQuery({ name: 'sambashare' });
+
+        expect(queriedGroups).to.be.ok;
+        expect(Array.isArray(queriedGroups)).to.be.true;
+        expect(queriedGroups.length).to.be.equal(1);
+
+        let sambashare = queriedGroups[0];
+
+        expect(sambashare).to.be.ok;
+        expect(sambashare.name).to.be.equal("sambashare");
+        expect(sambashare.gid).to.be.equal(128);
+        expect(sambashare.members.length).to.be.equal(2);
+        expect(sambashare.members[0]).to.be.equal("keith");
+    });
+
+    it("should return an empty array if no users match the query", async ()=>{
+        Group.setPath("./src/tests/fake.group");
+        let queriedGroups = await group.getGroupsByQuery({ name: "Doesn't exist"});
+
+        expect(queriedGroups).to.be.ok;
+        expect(Array.isArray(queriedGroups)).to.be.true;
+        expect(queriedGroups.length).to.be.equal(0);
+    });
+
+    it("should allow querying by name", async ()=>{
+        Group.setPath("./src/tests/fake.group");
+        let queriedGroups = await group.getGroupsByQuery({ name: "keith" });
+
+        expect(queriedGroups).to.be.ok;
+        expect(Array.isArray(queriedGroups)).to.be.true;
+        expect(queriedGroups.length).to.be.equal(1);
+    });
+
+    it("should allow querying by gid", async ()=>{
+        Group.setPath("./src/tests/fake.group");
+        let queriedGroups = await group.getGroupsByQuery({ gid: 33 });
+
+        expect(queriedGroups).to.be.ok;
+        expect(Array.isArray(queriedGroups)).to.be.true;
+        expect(queriedGroups.length).to.be.equal(1);
+    });
+
+    it("should allow querying by members (singular)", async ()=>{
+        Group.setPath("./src/tests/fake.group");
+        let queriedGroups = await group.getGroupsByQuery({ members: ["keith"] });
+
+        expect(queriedGroups).to.be.ok;
+        expect(Array.isArray(queriedGroups)).to.be.true;
+        expect(queriedGroups.length).to.be.equal(4);
+    });
+
+    it("should allow querying by multiple members", async ()=>{
+        Group.setPath("./src/tests/fake.group");
+        let queriedGroups = await group.getGroupsByQuery({ members: ["test","keith"] });
+
+        expect(queriedGroups).to.be.ok;
+        expect(Array.isArray(queriedGroups)).to.be.true;
+        expect(queriedGroups.length).to.be.equal(1);
     });
 
     afterEach(()=>{

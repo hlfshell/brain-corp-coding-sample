@@ -16,7 +16,7 @@ colord:x:125:
 geoclue:x:126:
 gdm:x:127:
 keith:x:1000:
-sambashare:x:128:keith
+sambashare:x:128:keith,test
 debian-tor:x:130:
 mysql:x:131:
 postgres:x:132:

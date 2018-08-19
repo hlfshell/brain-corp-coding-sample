@@ -72,10 +72,10 @@ export class Group {
             for(let attribute in query){
                 //Members requires its own search
                 if(attribute == "members"){
-                    let memberAssigned = false;
+                    let memberAssigned = true;
                     
                     //Check to see if each user requested is in the group
-                    group.members.forEach((member : string)=>{
+                    (<string[]> query.members).forEach((member : string)=>{
                         if(group.members.indexOf(member) == -1) memberAssigned = false;
                     });
 

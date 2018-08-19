@@ -314,10 +314,4 @@ describe("Passwd - getUsersByQuery", ()=>{
         Passwd.setColumnDelimiter(":");
     });
 
-    afterEach(()=>{
-        Passwd.setPath("/etc/passwd");
-        Passwd.setLineDelimiter("\n");
-        Passwd.setColumnDelimiter(":");
-    });
-
 });
