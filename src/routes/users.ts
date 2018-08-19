@@ -50,8 +50,15 @@ let UserRoutes : Route = {
         }
     },
 
-    getSpecificUser: function(req : Request, res : Response){
+    getSpecificUser: async function(req : Request, res : Response){
+        try {
+            let users = await passwd.getUsersByQuery({ uid: req.params.uid });
 
+            if(users.length <= 0) res.status(404).end();
+            else res.send(users[0]);
+        } catch(err){
+            handleErrors(err, res);
+        }
     },
 
     getUsersGroups: function(req : Request, res : Response){
