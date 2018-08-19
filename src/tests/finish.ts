@@ -13,7 +13,7 @@ of a second. This deals with the async nature of the response
 without having to do anything fancy.
 */
 
-export function awaitFinish(response : any, maxTries : number = 15){
+export function finish(response : any, maxTries : number = 15){
     return new Promise((resolve, reject)=>{
         let timesFired = 0;
 
