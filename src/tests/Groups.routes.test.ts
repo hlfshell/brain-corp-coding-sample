@@ -8,6 +8,7 @@ import { createRequest, createResponse } from "node-mocks-http";
 import GroupRoutes from "../routes/groups";
 import PasswdUser from '../interfaces/PasswdUser';
 import { finish } from "./finish";
+import resetUtilities from "./resetUtilities";
 import ErrorResponse from '../interfaces/ErrorResponse';
 import GroupItem from '../interfaces/GroupItem';
 
@@ -32,7 +33,7 @@ describe("/groups - get all groups", ()=>{
 
     it("should return an appropriate status code and error message if the passwd file path is wrong", async ()=>{
         let newPath = "./doesnt/exist";
-        Passwd.setPath(newPath);
+        Group.setPath(newPath);
 
         let request = createRequest();
         let response = createResponse();
@@ -52,7 +53,7 @@ describe("/groups - get all groups", ()=>{
     });
 
     it("should return an appropriate status code and error message if the group file can not be parsed", async ()=>{
-        Passwd.setLineDelimiter("\t");
+        Group.setLineDelimiter("\t");
 
         let request = createRequest();
         let response = createResponse();
@@ -72,8 +73,6 @@ describe("/groups - get all groups", ()=>{
     });
 
     beforeEach(()=>{
-        Group.setPath("./src/tests/fake.group");
-        Group.setLineDelimiter("\n");
-        Group.setColumnDelimiter(":");
+        resetUtilities();
     });
 });

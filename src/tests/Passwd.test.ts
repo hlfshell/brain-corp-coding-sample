@@ -30,6 +30,7 @@ describe("Passwd - Getters/Setters", ()=>{
     let Passwd = require('../classes/Passwd').Passwd;
 
     it("- getPath - should get the currently assigned path", ()=>{
+        Passwd.setPath("/etc/passwd");
         expect(Passwd.getPath()).to.be.equal("/etc/passwd");
     });
 
@@ -42,6 +43,7 @@ describe("Passwd - Getters/Setters", ()=>{
     });
 
     it("- getLineDelimiter - should get the line delimiter", ()=>{
+        Passwd.setLineDelimiter("\n");
         expect(Passwd.getLineDelimiter()).to.be.equal("\n");
     });
 
@@ -54,6 +56,7 @@ describe("Passwd - Getters/Setters", ()=>{
     });
 
     it("- getColumnDelimiter - should get the column delimiter", ()=>{
+        Passwd.setColumnDelimiter(":");
         expect(Passwd.getColumnDelimiter()).to.be.equal(":");
     });
 

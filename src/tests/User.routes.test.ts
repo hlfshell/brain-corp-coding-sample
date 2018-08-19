@@ -8,6 +8,7 @@ import { createRequest, createResponse } from "node-mocks-http";
 import UserRoutes from "../routes/users";
 import PasswdUser from '../interfaces/PasswdUser';
 import { finish } from "./finish";
+import resetUtilities from "./resetUtilities";
 import ErrorResponse from '../interfaces/ErrorResponse';
 import GroupItem from '../interfaces/GroupItem';
 
@@ -72,9 +73,7 @@ describe("/users - Get all users", ()=>{
     });
 
     beforeEach(()=>{
-        Passwd.setPath("./src/tests/fake.passwd"); 
-        Passwd.setColumnDelimiter(":");
-        Passwd.setLineDelimiter("\n");
+        resetUtilities();
     });
 });
 
@@ -167,10 +166,8 @@ describe("/users/query - Query for users", ()=>{
         expect(responseData.message).to.be.equal('There was an issue parsing the passwd file');
     });
 
-    before(()=>{
-        Passwd.setPath("./src/tests/fake.passwd"); 
-        Passwd.setColumnDelimiter(":");
-        Passwd.setLineDelimiter("\n");
+    beforeEach(()=>{
+        resetUtilities();
     });
 });
 
@@ -256,10 +253,8 @@ describe("/users/:uid - Specific user", ()=>{
         expect(responseData.message).to.be.equal('There was an issue parsing the passwd file');
     });
 
-    before(()=>{
-        Passwd.setPath("./src/tests/fake.passwd"); 
-        Passwd.setColumnDelimiter(":");
-        Passwd.setLineDelimiter("\n");
+    beforeEach(()=>{
+        resetUtilities();
     });
 });
 
@@ -348,10 +343,7 @@ describe("/users/:uid/groups - Get assigned groups to specific user", ()=>{
         expect(responseData.message).to.be.equal('There was an issue parsing the passwd file');
     });
 
-    before(()=>{
-        Passwd.setPath("./src/tests/fake.passwd"); 
-        Passwd.setColumnDelimiter(":");
-        Passwd.setLineDelimiter("\n");
-        Group.setPath("./src/tests/fake.group");
+    beforeEach(()=>{
+        resetUtilities();
     });
 });
