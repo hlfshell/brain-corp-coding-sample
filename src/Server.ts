@@ -21,8 +21,8 @@ export default class Server {
         // /users
         this.app.get("/users", UserRoutes.getAllUsers);
         this.app.get("/users/query", UserRoutes.queryForUsers);
-        this.app.get("/users/:uid");
-        this.app.get("/users/:uid/groups");
+        this.app.get("/users/:uid", UserRoutes.getSpecificUser);
+        this.app.get("/users/:uid/groups", UserRoutes.getUsersGroups);
 
         // /groups
         this.app.get("/groups", GroupRoutes.getAllGroups);
