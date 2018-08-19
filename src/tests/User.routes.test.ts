@@ -189,11 +189,9 @@ describe("/users/:uid - Specific user", ()=>{
  
         expect(response.statusCode).to.be.equal(200);
 
-        let responseData = response._getData() as PasswdUser[];
+        let responseData = response._getData() as PasswdUser;
         
-        expect(Array.isArray(responseData)).to.be.true;
-        expect(responseData.length).to.be.equal(1);
-        expect(responseData[0].name).to.be.equal("keith");
+        expect(responseData.name).to.be.equal("keith");
     });
 
     it("should return a status code of 404 if no such user is found", async ()=>{
