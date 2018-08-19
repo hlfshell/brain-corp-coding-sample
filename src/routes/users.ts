@@ -39,7 +39,7 @@ let UserRoutes : Route = {
 
     queryForUsers: async function(req : Request, res : Response){
         try {
-            let users = await passwd.getUsersByQuery(req.params);
+            let users = await passwd.getUsersByQuery(req.query);
             res.send(users);
         } catch(err){
             let error : ErrorResponse = {

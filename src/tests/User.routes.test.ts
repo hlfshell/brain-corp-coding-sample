@@ -80,7 +80,7 @@ describe("/users/query - Query for users", ()=>{
 
     it("should get expected users based on queries being passed in", async ()=>{
         let request = createRequest({
-            params: {
+            query: {
                 name: 'keith'
             }
         });
@@ -102,7 +102,7 @@ describe("/users/query - Query for users", ()=>{
 
     it("should return an empty array if no such users match", async ()=>{
         let request = createRequest({
-            params: {
+            query: {
                 name: 'doesntexist'
             }
         });
