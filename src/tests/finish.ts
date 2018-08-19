@@ -19,7 +19,7 @@ export function finish(response : any, maxTries : number = 15){
 
         let responseCheck = ()=>{
             timesFired++;
-            if(timesFired >= maxTries) reject("Response never ended");
+            if(timesFired >= maxTries) return reject("Response never ended");
             response.finished ? resolve() :
                 setTimeout(()=> responseCheck(), 100);
         }
