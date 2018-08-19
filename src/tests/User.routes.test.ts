@@ -33,11 +33,13 @@ describe("/users - Get all users", ()=>{
 
     it("should return an appropriate status code and error message if the passwd file path is wrong", async ()=>{
         let passwd = Passwd.getInstance();
-        let newPath = "./src/tests/fake.passwd";
+        let newPath = "./doesnt/exist";
         Passwd.setPath(newPath);
 
         let request = createRequest();
         let response = createResponse();
+
+        UserRoutes.getAllUsers(request, response);
 
         //Wait for the call to be done
         await finish(response);
@@ -48,15 +50,18 @@ describe("/users - Get all users", ()=>{
 
         expect(responseData.code).to.be.ok;
         expect(responseData.code).to.be.equal("PASSWD_FILE_LOCATION_ERROR");
-        expect(responseData.message).to.be.equal(`The passwd file could not be reached at ${newPath}`);
+        expect(responseData.message).to.be.equal("Something went wrong reading the passwd file");
     });
 
     it("should return an appropriate status code and error message if the passwd file can not be parsed", async ()=>{
         let passwd = Passwd.getInstance();
         Passwd.setPath("./src/tests/fake.passwd");
+        Passwd.setLineDelimiter("\t");
 
         let request = createRequest();
         let response = createResponse();
+
+        UserRoutes.getAllUsers(request, response);
 
         //Wait for the call to be done
         await finish(response);
