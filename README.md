@@ -8,15 +8,16 @@ After cloning down the repos with `git clone git@github.com:hlfshell/passwd-as-a
 # Tests
 To run the tests, please run `npm run test`. If you need to build and test, `npm run build-and-test` will take care of you.
 
-## Human testing
+## Human Testing
 If you wish to play with the service manually, I've included an Insomnia REST workspace for quickly firing off requests to a running server.
 
-# Running the server
+# Running the Server
 To run the server, you can simply:
 
 ```
 npm run server
 ```
+The server will start up on a random open port.
 
 If you wish to control options, such as port, `passwd` file path, or `groups` file path, you can use:
 
@@ -24,7 +25,7 @@ If you wish to control options, such as port, `passwd` file path, or `groups` fi
 npm run server -- --port 9000 --passwd /path/to/passwd --group /path/to/groups
 ```
 
-# Code structure
+# Code Structure
 
 I decided to use Typescript - the more I use Typescript, the more I appreciate what it does for me. I find a lot of common typos and errors are caught by utilizing Typescript's features, and it consistently surprises me with its depth.
 
