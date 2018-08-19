@@ -12,9 +12,6 @@ import ErrorResponse from '../interfaces/ErrorResponse';
 describe("/users - Get all users", ()=>{
 
     it("should return a list of all users if all goes well", async ()=>{
-        let passwd = Passwd.getInstance();
-        Passwd.setPath("./src/tests/fake.passwd");
-
         let request = createRequest();
         let response = createResponse();
 
@@ -32,7 +29,6 @@ describe("/users - Get all users", ()=>{
     });
 
     it("should return an appropriate status code and error message if the passwd file path is wrong", async ()=>{
-        let passwd = Passwd.getInstance();
         let newPath = "./doesnt/exist";
         Passwd.setPath(newPath);
 
@@ -54,8 +50,6 @@ describe("/users - Get all users", ()=>{
     });
 
     it("should return an appropriate status code and error message if the passwd file can not be parsed", async ()=>{
-        let passwd = Passwd.getInstance();
-        Passwd.setPath("./src/tests/fake.passwd");
         Passwd.setLineDelimiter("\t");
 
         let request = createRequest();
@@ -75,10 +69,113 @@ describe("/users - Get all users", ()=>{
         expect(responseData.message).to.be.equal('There was an issue parsing the passwd file');
     });
 
-
-    afterEach(()=>{
-        Passwd.setPath("/etc/path"); 
+    beforeEach(()=>{
+        Passwd.setPath("./src/tests/fake.passwd"); 
         Passwd.setColumnDelimiter(":");
         Passwd.setLineDelimiter("\n");
     });
+});
+
+describe("/users/query - Query for users", ()=>{
+
+    it("should get expected users based on queries being passed in", async ()=>{
+        let request = createRequest({
+            params: {
+                name: 'keith'
+            }
+        });
+        let response = createResponse();
+
+        UserRoutes.queryForUsers(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+ 
+        expect(response.statusCode).to.be.equal(200);
+
+        let responseData = response._getData() as PasswdUser[];
+        
+        expect(Array.isArray(responseData)).to.be.true;
+        expect(responseData.length).to.be.equal(1);
+        expect(responseData[0].name).to.be.equal("keith");
+    });
+
+    it("should return an empty array if no such users match", async ()=>{
+        let request = createRequest({
+            params: {
+                name: 'doesntexist'
+            }
+        });
+        let response = createResponse();
+
+        UserRoutes.queryForUsers(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+ 
+        expect(response.statusCode).to.be.equal(200);
+
+        let responseData = response._getData() as PasswdUser[];
+        
+        expect(Array.isArray(responseData)).to.be.true;
+        expect(responseData.length).to.be.equal(0);
+    });
+
+    it("should return an appropriate status code and error message if the passwd file path is wrong", async ()=>{
+        let passwd = Passwd.getInstance();
+        let newPath = "./doesnt/exist";
+        Passwd.setPath(newPath);
+
+        let request = createRequest();
+        let response = createResponse();
+
+        UserRoutes.queryForUsers(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+
+        expect(response.statusCode).to.be.equal(500);
+        
+        let responseData = response._getData() as ErrorResponse;
+
+        expect(responseData.code).to.be.ok;
+        expect(responseData.code).to.be.equal("PASSWD_FILE_LOCATION_ERROR");
+        expect(responseData.message).to.be.equal("Something went wrong reading the passwd file");
+    });
+
+    it("should return an appropriate status code and error message if the passwd file can not be parsed", async ()=>{
+        let passwd = Passwd.getInstance();
+        Passwd.setPath("./src/tests/fake.passwd");
+        Passwd.setLineDelimiter("\t");
+
+        let request = createRequest();
+        let response = createResponse();
+
+        UserRoutes.queryForUsers(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+
+        expect(response.statusCode).to.be.equal(500);
+
+        let responseData = response._getData() as ErrorResponse;
+
+        expect(responseData.code).to.be.ok;
+        expect(responseData.code).to.be.equal("PASSWD_PARSE_ERROR");
+        expect(responseData.message).to.be.equal('There was an issue parsing the passwd file');
+    });
+
+    before(()=>{
+        Passwd.setPath("./src/tests/fake.passwd"); 
+        Passwd.setColumnDelimiter(":");
+        Passwd.setLineDelimiter("\n");
+    });
+});
+
+describe("/users/:uid - Specific user", ()=>{
+    
+});
+
+describe("/users/:uid/groups - Get assigned groups to specific user", ()=>{
+    
 });
