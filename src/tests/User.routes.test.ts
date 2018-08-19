@@ -262,5 +262,91 @@ describe("/users/:uid - Specific user", ()=>{
 });
 
 describe("/users/:uid/groups - Get assigned groups to specific user", ()=>{
-    
+    it("should get the groups assigned to the user", async ()=>{
+        let request = createRequest({
+            params: {
+                uid: 1000
+            }
+        });
+        let response = createResponse();
+
+        UserRoutes.getUsersGroups(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+ 
+        expect(response.statusCode).to.be.equal(200);
+
+        let responseData = response._getData() as string[];
+
+        expect(Array.isArray(responseData)).to.be.true;
+        expect(responseData.length).to.be.equal(4);
+        expect(responseData.indexOf("docker")).to.not.equal(-1);
+    });
+
+    it("should return a status code of 404 if no such user is found", async ()=>{
+        let request = createRequest({
+            params: {
+                name: 'doesntexist'
+            }
+        });
+        let response = createResponse();
+
+        UserRoutes.getUsersGroups(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+ 
+        expect(response.statusCode).to.be.equal(404);
+    });
+
+    it("should return an appropriate status code and error message if the passwd file path is wrong", async ()=>{
+        let passwd = Passwd.getInstance();
+        let newPath = "./doesnt/exist";
+        Passwd.setPath(newPath);
+
+        let request = createRequest();
+        let response = createResponse();
+
+        UserRoutes.getUsersGroups(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+
+        expect(response.statusCode).to.be.equal(500);
+        
+        let responseData = response._getData() as ErrorResponse;
+
+        expect(responseData.code).to.be.ok;
+        expect(responseData.code).to.be.equal("PASSWD_FILE_LOCATION_ERROR");
+        expect(responseData.message).to.be.equal("Something went wrong reading the passwd file");
+    });
+
+    it("should return an appropriate status code and error message if the passwd file can not be parsed", async ()=>{
+        let passwd = Passwd.getInstance();
+        Passwd.setPath("./src/tests/fake.passwd");
+        Passwd.setLineDelimiter("\t");
+
+        let request = createRequest();
+        let response = createResponse();
+
+        UserRoutes.getUsersGroups(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+
+        expect(response.statusCode).to.be.equal(500);
+
+        let responseData = response._getData() as ErrorResponse;
+
+        expect(responseData.code).to.be.ok;
+        expect(responseData.code).to.be.equal("PASSWD_PARSE_ERROR");
+        expect(responseData.message).to.be.equal('There was an issue parsing the passwd file');
+    });
+
+    before(()=>{
+        Passwd.setPath("./src/tests/fake.passwd"); 
+        Passwd.setColumnDelimiter(":");
+        Passwd.setLineDelimiter("\n");
+    });
 });
