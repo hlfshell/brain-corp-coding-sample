@@ -44,7 +44,12 @@ let GroupRoutes : Route = {
     },
 
     queryForGroups: async function(req : Request, res : Response){
-
+        try {
+            let groups = await group.getGroupsByQuery(req.query);
+            res.send(groups);
+        } catch(err){
+            handleErrors(err, res);
+        }
     },
 
     getSpecificGroup: async function(req : Request, res : Response){
