@@ -45,6 +45,13 @@ let GroupRoutes : Route = {
 
     queryForGroups: async function(req : Request, res : Response){
         try {
+            //We are doing this due to naming difference in the requested
+            //route query and the actual attributes search
+            if(req.query.member){
+                req.query.members = req.query.member;
+                delete req.query.member;
+            }
+
             let groups = await group.getGroupsByQuery(req.query);
             res.send(groups);
         } catch(err){
