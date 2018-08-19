@@ -1,6 +1,6 @@
 # Passwd as a service
 
-The challenge given from Brain Corp is to create a `passwd` HTTP REST microservice. While you would never run this in real life due to securtiy concerns, it makes sense - pick a commonly available function with repeatable output and wrap it in an API for a code sample.
+The challenge given from Brain Corp is to create a `passwd` HTTP REST microservice. While you would never run this in real life due to securtiy concerns, it makes sense - pick a commonly available function with repeatable output and wrap it in an API for a code sample. The actual challenge as given is here in the repos under `challenge.pdf`.
 
 # Installing
 After cloning down the repos with `git clone git@github.com:hlfshell/passwd-as-a-service.git` - do an `npm install` in the directory. There is already a pre-built version ready to go, but you can run `npm run build` if you wish to re-build.
