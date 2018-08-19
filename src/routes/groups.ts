@@ -53,7 +53,14 @@ let GroupRoutes : Route = {
     },
 
     getSpecificGroup: async function(req : Request, res : Response){
+        try {
+            let groups = await group.getGroupsByQuery({ gid: req.params.gid });
 
+            if(groups.length <= 0) res.status(404).end();
+            else res.send(groups[0]);
+        } catch(err){
+            handleErrors(err, res);
+        }
     }
 
 };
