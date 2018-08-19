@@ -25,7 +25,7 @@ describe("/users - Get all users", ()=>{
  
         expect(response.statusCode).to.be.equal(200);
 
-        let responseData = JSON.parse(response._getData()) as PasswdUser[];
+        let responseData = response._getData() as PasswdUser[];
         
         expect(Array.isArray(responseData)).to.be.true;
         expect(responseData.length).to.be.equal(25);
@@ -43,8 +43,8 @@ describe("/users - Get all users", ()=>{
         await finish(response);
 
         expect(response.statusCode).to.be.equal(500);
-
-        let responseData = JSON.parse(response._getData()) as ErrorResponse;
+        
+        let responseData = response._getData() as ErrorResponse;
 
         expect(responseData.code).to.be.ok;
         expect(responseData.code).to.be.equal("PASSWD_FILE_LOCATION_ERROR");
@@ -63,7 +63,7 @@ describe("/users - Get all users", ()=>{
 
         expect(response.statusCode).to.be.equal(500);
 
-        let responseData = JSON.parse(response._getData()) as ErrorResponse;
+        let responseData = response._getData() as ErrorResponse;
 
         expect(responseData.code).to.be.ok;
         expect(responseData.code).to.be.equal("PASSWD_PARSE_ERROR");
