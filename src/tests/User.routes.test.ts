@@ -2,12 +2,14 @@ import 'mocha';
 import { before, after } from 'mocha';
 import { expect } from 'chai';
 import { Passwd } from "../classes/Passwd";
+import { Group } from "../classes/Group";
 import { createRequest, createResponse } from "node-mocks-http";
 
 import UserRoutes from "../routes/users";
 import PasswdUser from '../interfaces/PasswdUser';
 import { finish } from "./finish";
 import ErrorResponse from '../interfaces/ErrorResponse';
+import GroupItem from '../interfaces/GroupItem';
 
 describe("/users - Get all users", ()=>{
 
@@ -277,11 +279,13 @@ describe("/users/:uid/groups - Get assigned groups to specific user", ()=>{
  
         expect(response.statusCode).to.be.equal(200);
 
-        let responseData = response._getData() as string[];
+        let responseData = response._getData() as GroupItem[];
 
         expect(Array.isArray(responseData)).to.be.true;
         expect(responseData.length).to.be.equal(4);
-        expect(responseData.indexOf("docker")).to.not.equal(-1);
+        expect(responseData.findIndex((item : GroupItem)=>{
+            return item.name == "docker"
+        })).to.not.equal(-1);
     });
 
     it("should return a status code of 404 if no such user is found", async ()=>{
@@ -348,5 +352,6 @@ describe("/users/:uid/groups - Get assigned groups to specific user", ()=>{
         Passwd.setPath("./src/tests/fake.passwd"); 
         Passwd.setColumnDelimiter(":");
         Passwd.setLineDelimiter("\n");
+        Group.setPath("./src/tests/fake.group");
     });
 });
