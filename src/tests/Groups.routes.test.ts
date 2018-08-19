@@ -168,3 +168,89 @@ describe("/groups/query - Query for groups", ()=>{
         resetUtilities();
     });
 });
+
+describe("/group/:gid - Specific group", ()=>{
+
+    it("should get the expected group based on gid", async ()=>{
+        let request = createRequest({
+            params: {
+                gid: 121
+            }
+        });
+        let response = createResponse();
+
+        GroupRoutes.getSpecificGroup(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+ 
+        expect(response.statusCode).to.be.equal(200);
+
+        let responseData = response._getData() as GroupItem;
+        
+        expect(responseData.name).to.be.equal("scanner");
+        expect(responseData.members.indexOf("saned")).to.not.equal(-1);
+    });
+
+    it("should return a status code of 404 if no such group is found", async ()=>{
+        let request = createRequest({
+            params: {
+                gid: 9999
+            }
+        });
+        let response = createResponse();
+
+        GroupRoutes.getSpecificGroup(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+ 
+        expect(response.statusCode).to.be.equal(404);
+    });
+
+    it("should return an appropriate status code and error message if the passwd file path is wrong", async ()=>{
+        let newPath = "./doesnt/exist";
+        Group.setPath(newPath);
+
+        let request = createRequest();
+        let response = createResponse();
+
+        GroupRoutes.getSpecificGroup(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+
+        expect(response.statusCode).to.be.equal(500);
+        
+        let responseData = response._getData() as ErrorResponse;
+
+        expect(responseData.code).to.be.ok;
+        expect(responseData.code).to.be.equal("GROUP_FILE_LOCATION_ERROR");
+        expect(responseData.message).to.be.equal("Something went wrong reading the group file");
+    });
+
+    it("should return an appropriate status code and error message if the group file can not be parsed", async ()=>{
+        Group.setLineDelimiter("\t");
+
+        let request = createRequest();
+        let response = createResponse();
+
+        GroupRoutes.getSpecificGroup(request, response);
+
+        //Wait for the call to be done
+        await finish(response);
+
+        expect(response.statusCode).to.be.equal(500);
+
+        let responseData = response._getData() as ErrorResponse;
+
+        expect(responseData.code).to.be.ok;
+        expect(responseData.code).to.be.equal("GROUP_PARSE_ERROR");
+        expect(responseData.message).to.be.equal('There was an issue parsing the group file');
+    });
+
+
+    beforeEach(()=>{
+        resetUtilities();
+    });
+});
