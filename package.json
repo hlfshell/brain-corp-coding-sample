@@ -7,7 +7,8 @@
     "clean": "rm -rf dist/",
     "build": "npm run clean && ./node_modules/.bin/tsc",
     "test": "./node_modules/.bin/mocha ./dist/tests",
-    "build-and-test": "npm run build && npm run test"
+    "build-and-test": "npm run build && npm run test",
+    "server": "node ./dist/cli.js $"
   },
   "author": {
     "name": "Keith Chester",
