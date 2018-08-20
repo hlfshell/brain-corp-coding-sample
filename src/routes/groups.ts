@@ -8,6 +8,9 @@ import { Group } from "../classes/Group";
 let passwd = Passwd.getInstance();
 let group = Group.getInstance();
 
+//This was being repeated - handle specific errors thrown by the group
+//utility function in order to report an appropriate message through the
+//REST service without allowing the exception to bring down the server.
 function handleErrors(err : Error, res : Response){
     let error : ErrorResponse = {
         code: "",
@@ -34,6 +37,7 @@ function handleErrors(err : Error, res : Response){
 
 let GroupRoutes : Route = {
     
+    // /groups
     getAllGroups: async function(req : Request, res : Response){
         try {
             let groups = await group.getAllGroups();
@@ -43,6 +47,7 @@ let GroupRoutes : Route = {
         }
     },
 
+    // /groups/query?attribute=<value>&another_attribute=<value>
     queryForGroups: async function(req : Request, res : Response){
         try {
             //We are doing this due to naming difference in the requested
@@ -59,6 +64,7 @@ let GroupRoutes : Route = {
         }
     },
 
+    // /groups/:gid
     getSpecificGroup: async function(req : Request, res : Response){
         try {
             let groups = await group.getGroupsByQuery({ gid: req.params.gid });

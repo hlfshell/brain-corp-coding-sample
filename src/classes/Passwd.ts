@@ -14,10 +14,12 @@ export class Passwd {
     private static userLineDelimiter : string = "\n";
     private static userColumnDelimiter : string = ":";
 
+    //Singleton style constructor
     private constructor(){
 
     }
 
+    //singleton style instance getter
     public static getInstance() : Passwd {
         if(!this.instance) this.instance = new Passwd();
         return this.instance;
@@ -26,6 +28,7 @@ export class Passwd {
     //======== Utility Functions ======== 
 
     public async getAllUsers() : Promise<PasswdUser[]> {
+        //Read the passwd file
         let passwdFile;
         try {
             passwdFile = await this.readPasswdFile();
@@ -33,8 +36,10 @@ export class Passwd {
             throw new Error(`Something went wrong reading the passwd file`);
         }
 
+        //Parse the passwd file
         let users : PasswdUser[] = [];
         try{
+            //split by lines by the Line Delimiter
             let userLines = passwdFile.split(Passwd.userLineDelimiter);
             userLines.forEach((line : string)=>{
                 //Protection in case of an empty line - ignore
@@ -67,8 +72,10 @@ export class Passwd {
     }
 
     public async getUsersByQuery(query : PasswdQuery) : Promise<PasswdUser[]> {
+        //Get all users
         let users = await this.getAllUsers();
 
+        //Search them via the query
         let filteredUsers = users.filter((user : PasswdUser)=>{
             let matched = true;
 

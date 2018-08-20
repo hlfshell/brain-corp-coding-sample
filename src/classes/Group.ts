@@ -10,14 +10,20 @@ export class Group {
 
     private static instance : Group;
     
+    //Possible settings to change
+    //In the end, only path was exposed to server,
+    //though the delimiters are used to intentionally
+    //break parsing in tests
     private static GroupFileLocation : string = "/etc/group";
     private static userLineDelimiter : string = "\n";
     private static userColumnDelimiter : string = ":";
 
+    //Private - singleton approach
     private constructor(){
 
     }
 
+    //Singleton style instance getter
     public static getInstance() : Group {
         if(!this.instance) this.instance = new Group();
         return this.instance;
@@ -26,6 +32,7 @@ export class Group {
     //======== Utility Functions ======== 
 
     public async getAllGroups() : Promise<GroupItem[]> {
+        //Get the group file
         let GroupFile;
         try {
             GroupFile = await this.readGroupFile();
@@ -33,8 +40,10 @@ export class Group {
             throw new Error(`Something went wrong reading the group file`);
         }
 
+        //Begin parsing the group file into group items
         let groups : GroupItem[] = [];
         try{
+            //Split by lines
             let userLines = GroupFile.split(Group.userLineDelimiter);
             userLines.forEach((line : string)=>{
                 //Protection in case of an empty line - ignore
@@ -64,9 +73,10 @@ export class Group {
     }
 
     public async getGroupsByQuery(query : GroupQuery) : Promise<GroupItem[]> {
-        let users = await this.getAllGroups();
+        //Get all groups for running checks against
+        let groups = await this.getAllGroups();
 
-        let filteredGroups = users.filter((group : GroupItem)=>{
+        let filteredGroups = groups.filter((group : GroupItem)=>{
             let matched = true;
 
             for(let attribute in query){

@@ -8,6 +8,9 @@ import { Group } from "../classes/Group";
 let passwd = Passwd.getInstance();
 let group = Group.getInstance();
 
+//This was being repeated - handle specific errors thrown by the passwd
+//utility function in order to report an appropriate message through the
+//REST service without allowing the exception to bring down the server.
 function handleErrors(err : Error, res : Response){
     let error : ErrorResponse = {
         code: "",
@@ -34,6 +37,7 @@ function handleErrors(err : Error, res : Response){
 
 let UserRoutes : Route = {
 
+    // /users
     getAllUsers: async function(req : Request, res : Response){
         try{
             let allUsers = await passwd.getAllUsers();
@@ -43,6 +47,7 @@ let UserRoutes : Route = {
         }
     },
 
+    // /users/query?attribute=<value>&attribute2=<value2>
     queryForUsers: async function(req : Request, res : Response){
         try {
             let users = await passwd.getUsersByQuery(req.query);
@@ -52,6 +57,7 @@ let UserRoutes : Route = {
         }
     },
 
+    // /users/:uid
     getSpecificUser: async function(req : Request, res : Response){
         try {
             let users = await passwd.getUsersByQuery({ uid: req.params.uid });
@@ -63,6 +69,7 @@ let UserRoutes : Route = {
         }
     },
 
+    // /users/:uid/group
     getUsersGroups: async function(req : Request, res : Response){
         try {
             let users = await passwd.getUsersByQuery({ uid: req.params.uid });
