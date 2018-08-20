@@ -1,6 +1,6 @@
 # Passwd as a service
 
-The challenge given from Brain Corp is to create a `passwd` HTTP REST microservice. While you would never run this in real life due to securtiy concerns, it makes sense - pick a commonly available function with repeatable output and wrap it in an API for a code sample. The actual challenge as given is here in the repos under `challenge.pdf`.
+I was given a programming challenge from a potential employer in order to generate a coding sample. The goal is to create a `/etc/passwd` (and `/etc/group`) HTTP REST microservice. While you would never run this in real life due to securtiy concerns, it makes sense - pick a commonly available function with repeatable output and wrap it in an API for a code sample. The actual challenge as given is here in the repos under `challenge.pdf`.
 
 # Installing
 After cloning down the repos with `git clone git@github.com:hlfshell/passwd-as-a-service.git` - do an `npm install` in the directory. There is already a pre-built version ready to go, but you can run `npm run build` if you wish to re-build.
@@ -27,9 +27,9 @@ npm run server -- --port 9000 --passwd /path/to/passwd --group /path/to/groups
 
 # Code Structure
 
-I decided to use Typescript - the more I use Typescript, the more I appreciate what it does for me. I find a lot of common typos and errors are caught by utilizing Typescript's features, and it consistently surprises me with its depth.
+I decided to use Typescript for this project. The more I use Typescript, the more I appreciate its utility in my coding flow. I find a lot of common typos and errors are caught by utilizing Typescript's features, and it consistently surprises me with its depth.
 
-You'll find all Typescript files in `src` and the resulting compiled node files in `dist`.
+You'll find all Typescript files in `src` and the resulting compiled JavaScript files in `dist`.
 
 The `cli` component executes a CLI for ease of setting configuration options for the server.
 
